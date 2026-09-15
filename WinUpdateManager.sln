@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{A1BB39D0-077D-43AD-B6D5-05B03A3A48C7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinUpdateManager", "src\WinUpdateManager\WinUpdateManager.csproj", "{CD990EFE-B9DA-4DA0-8A18-4B511CF47EE6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{AFE995C0-65D1-4FFE-A099-2A720621D52A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinUpdateManager.Tests", "tests\WinUpdateManager.Tests\WinUpdateManager.Tests.csproj", "{005656C3-DD28-4B38-AD3F-4A3F8ADB0ECA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CD990EFE-B9DA-4DA0-8A18-4B511CF47EE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD990EFE-B9DA-4DA0-8A18-4B511CF47EE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD990EFE-B9DA-4DA0-8A18-4B511CF47EE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD990EFE-B9DA-4DA0-8A18-4B511CF47EE6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{005656C3-DD28-4B38-AD3F-4A3F8ADB0ECA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{005656C3-DD28-4B38-AD3F-4A3F8ADB0ECA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{005656C3-DD28-4B38-AD3F-4A3F8ADB0ECA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{005656C3-DD28-4B38-AD3F-4A3F8ADB0ECA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CD990EFE-B9DA-4DA0-8A18-4B511CF47EE6} = {A1BB39D0-077D-43AD-B6D5-05B03A3A48C7}
+		{005656C3-DD28-4B38-AD3F-4A3F8ADB0ECA} = {AFE995C0-65D1-4FFE-A099-2A720621D52A}
+	EndGlobalSection
+EndGlobal

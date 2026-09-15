@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    WinUpdateManager targets .NET Framework 3.5 and 4.0 so that a single build runs on every
+    Windows Server release from Windows Server 2008 up to Windows Server 2025 (including Server Core):
+      * net35 build + WinUpdateManager.exe.config  -> runs on CLR 2.0 (2008 / 2008 R2) and CLR 4.x (2012+)
+      * net40 build                                -> runs on any server with .NET Framework 4.x (2012+ in-box)
+  -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworks>net35;net40</TargetFrameworks>
+    <LangVersion>10.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <AssemblyName>WinUpdateManager</AssemblyName>
+    <RootNamespace>WinUpdateManager</RootNamespace>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <Version>1.0.0</Version>
+    <Product>WinUpdateManager</Product>
+    <Description>Windows Update manager for every Windows Server version (2008 - 2025)</Description>
+    <Copyright>Copyright (c) 2026 WinUpdateManager contributors</Copyright>
+    <Deterministic>true</Deterministic>
+    <DebugType>portable</DebugType>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <GenerateResourceUsePreserializedResources>false</GenerateResourceUsePreserializedResources>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="System.ServiceProcess" />
+  </ItemGroup>
+
+</Project>

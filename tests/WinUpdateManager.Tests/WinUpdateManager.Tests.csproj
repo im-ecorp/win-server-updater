@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Cross-platform unit tests. The application's platform independent source files are compiled
+    directly into this test assembly (the Windows-only files under Windows/ and Program.cs are excluded),
+    so the tests also run on Linux/macOS CI agents. The simulation layer drives end-to-end command tests.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <LangVersion>10.0</LangVersion>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <NoWarn>$(NoWarn);CA1416</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\src\WinUpdateManager\**\*.cs"
+             Exclude="..\..\src\WinUpdateManager\Windows\**;..\..\src\WinUpdateManager\Program.cs;..\..\src\WinUpdateManager\obj\**;..\..\src\WinUpdateManager\bin\**"
+             Link="App\%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" PrivateAssets="all" />
+  </ItemGroup>
+
+</Project>

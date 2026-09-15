@@ -1,0 +1,89 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Unit and simulation tests
+        run: dotnet test tests/WinUpdateManager.Tests/WinUpdateManager.Tests.csproj -c Release
+
+  windows:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-2022, windows-2025]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Build (.NET Framework 3.5 + 4.0)
+        run: dotnet build src/WinUpdateManager/WinUpdateManager.csproj -c Release
+
+      - name: Smoke test in simulation mode
+        shell: pwsh
+        run: |
+          $exe = "src/WinUpdateManager/bin/Release/net35/WinUpdateManager.exe"
+          & $exe version
+          if ($LASTEXITCODE -ne 0) { throw "version failed" }
+          & $exe --simulate --no-log install --yes
+          if ($LASTEXITCODE -ne 4) { throw "expected exit code 4 from simulated install, got $LASTEXITCODE" }
+          exit 0
+
+      - name: Read-only commands against the real Windows Update Agent
+        continue-on-error: true
+        timeout-minutes: 30
+        shell: pwsh
+        run: |
+          $exe = "src/WinUpdateManager/bin/Release/net35/WinUpdateManager.exe"
+          & $exe status --no-log
+          & $exe pending-reboot --no-log
+          & $exe services --no-log
+          & $exe config show --no-log
+          & $exe history --count 10 --no-log
+          & $exe list --no-log
+          exit 0
+
+      - name: Package
+        if: matrix.os == 'windows-2022'
+        shell: pwsh
+        run: |
+          $out = "dist/WinUpdateManager"
+          New-Item -ItemType Directory -Force -Path "$out/net40" | Out-Null
+          Copy-Item src/WinUpdateManager/bin/Release/net35/WinUpdateManager.exe, src/WinUpdateManager/bin/Release/net35/WinUpdateManager.exe.config, README.md, LICENSE $out
+          Copy-Item src/WinUpdateManager/bin/Release/net40/WinUpdateManager.exe, src/WinUpdateManager/bin/Release/net40/WinUpdateManager.exe.config "$out/net40"
+          Compress-Archive -Path "$out/*" -DestinationPath dist/WinUpdateManager.zip -Force
+
+      - uses: actions/upload-artifact@v4
+        if: matrix.os == 'windows-2022'
+        with:
+          name: WinUpdateManager
+          path: dist/WinUpdateManager.zip
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [unit-tests, windows]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: WinUpdateManager
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release create "${GITHUB_REF_NAME}" WinUpdateManager.zip --repo "${GITHUB_REPOSITORY}" --title "WinUpdateManager ${GITHUB_REF_NAME}" --generate-notes
