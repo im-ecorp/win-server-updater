@@ -66,12 +66,16 @@ jobs:
           Copy-Item src/WinUpdateManager/bin/Release/net35/WinUpdateManager.exe, src/WinUpdateManager/bin/Release/net35/WinUpdateManager.exe.config, README.md, LICENSE $out
           Copy-Item src/WinUpdateManager/bin/Release/net40/WinUpdateManager.exe, src/WinUpdateManager/bin/Release/net40/WinUpdateManager.exe.config "$out/net40"
           Compress-Archive -Path "$out/*" -DestinationPath dist/WinUpdateManager.zip -Force
+          $hash = (Get-FileHash dist/WinUpdateManager.zip -Algorithm SHA256).Hash.ToLower()
+          "$hash  WinUpdateManager.zip" | Set-Content -Encoding ascii dist/WinUpdateManager.zip.sha256
 
       - uses: actions/upload-artifact@v4
         if: matrix.os == 'windows-2022'
         with:
           name: WinUpdateManager
-          path: dist/WinUpdateManager.zip
+          path: |
+            dist/WinUpdateManager.zip
+            dist/WinUpdateManager.zip.sha256
 
   release:
     if: startsWith(github.ref, 'refs/tags/v')
@@ -86,4 +90,9 @@ jobs:
       - name: Create GitHub release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh release create "${GITHUB_REF_NAME}" WinUpdateManager.zip --repo "${GITHUB_REPOSITORY}" --title "WinUpdateManager ${GITHUB_REF_NAME}" --generate-notes
+        run: |
+          # Tags containing a dash (v1.0.0-beta.1, v1.1.0-rc.1) are published as pre-releases.
+          flags=""
+          case "${GITHUB_REF_NAME}" in *-*) flags="--prerelease" ;; esac
+          gh release create "${GITHUB_REF_NAME}" WinUpdateManager.zip WinUpdateManager.zip.sha256 \
+            --repo "${GITHUB_REPOSITORY}" --title "WinUpdateManager ${GITHUB_REF_NAME}" --generate-notes $flags

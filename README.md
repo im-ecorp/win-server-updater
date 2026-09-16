@@ -67,6 +67,11 @@ Invoke-WebRequest https://github.com/im-ecorp/win-server-updater/releases/latest
 Expand-Archive C:\Tools\WinUpdateManager.zip C:\Tools\WinUpdateManager -Force
 ```
 
+- `releases/latest/download/...` only points to **full** releases. To get a pre-release, use its version in the URL,
+  e.g. `https://github.com/im-ecorp/win-server-updater/releases/download/v1.0.0-beta.1/WinUpdateManager.zip`.
+- Each release also has `WinUpdateManager.zip.sha256`. Check the download with
+  `(Get-FileHash C:\Tools\WinUpdateManager.zip -Algorithm SHA256).Hash` and compare the values.
+
 ## Quick start
 
 1. Copy `WinUpdateManager.exe` **and** `WinUpdateManager.exe.config` to the server, e.g. `C:\Tools\WinUpdateManager\`.
