@@ -1,4 +1,9 @@
-# WinUpdateManager
+# win-server-updater — WinUpdateManager
+
+[![build](https://github.com/im-ecorp/win-server-updater/actions/workflows/build.yml/badge.svg)](https://github.com/im-ecorp/win-server-updater/actions/workflows/build.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+![Windows Server 2008–2025](https://img.shields.io/badge/Windows%20Server-2008%20%E2%80%93%202025-0078D6)
+![.NET Framework 3.5 / 4.x](https://img.shields.io/badge/.NET%20Framework-3.5%20%7C%204.x-512BD4)
 
 A single, dependency-free **C# program for managing Windows Update on every Windows Server version**:
 Windows Server 2008, 2008 R2, 2012, 2012 R2, 2016, 2019, 2022 and 2025 — Desktop Experience and Server Core.
@@ -44,6 +49,23 @@ Control Manager and the registry directly. It is not a wrapper around PowerShell
 The main build targets .NET Framework 3.5 and ships with `WinUpdateManager.exe.config`, which lets the **same exe**
 run on the 2.0 runtime *and* the 4.x runtime. **Always keep the `.config` file next to the `.exe`.**
 A `net40` build is also produced for servers that only have .NET 4.x.
+
+## Download
+
+- **Releases:** download `WinUpdateManager.zip` from the
+  [Releases page](https://github.com/im-ecorp/win-server-updater/releases) (created automatically for `v*` tags).
+- **Latest build:** open the latest successful run on the
+  [Actions page](https://github.com/im-ecorp/win-server-updater/actions/workflows/build.yml) and download the `WinUpdateManager` artifact.
+- **From source:** see [Building from source](#building-from-source).
+
+On the server you can also download a release directly from an elevated PowerShell:
+
+```powershell
+New-Item -ItemType Directory -Force C:\Tools\WinUpdateManager | Out-Null
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+Invoke-WebRequest https://github.com/im-ecorp/win-server-updater/releases/latest/download/WinUpdateManager.zip -OutFile C:\Tools\WinUpdateManager.zip
+Expand-Archive C:\Tools\WinUpdateManager.zip C:\Tools\WinUpdateManager -Force
+```
 
 ## Quick start
 
@@ -152,6 +174,9 @@ WinUpdateManager --simulate schedule create --day monday --at 02:00
 Requires the .NET 8 SDK (Windows, Linux or macOS — the .NET Framework reference assemblies come from NuGet).
 
 ```bash
+git clone https://github.com/im-ecorp/win-server-updater.git
+cd win-server-updater
+
 dotnet build src/WinUpdateManager/WinUpdateManager.csproj -c Release
 # output: src/WinUpdateManager/bin/Release/net35/  and  .../net40/
 
@@ -186,6 +211,11 @@ tests/WinUpdateManager.Tests/
   the `wusa.exe` / `DISM` alternative.
 - Windows Server 2008/2008 R2/2012/2012 R2 only receive updates with Extended Security Updates (ESU).
 
+## Contributing
+
+Issues and pull requests are welcome. Please run `dotnet test` before submitting, and test changes to the
+`Windows/` folder on a real Windows Server (or use the `--simulate` mode for everything else).
+
 ## License
 
-MIT
+[MIT](LICENSE) © 2026 Mohammad Hossein Saeidi
